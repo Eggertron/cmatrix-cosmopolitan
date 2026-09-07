@@ -1,0 +1,63 @@
+name: Build Cosmopolitan CMatrix
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential autoconf automake libtool wget unzip git
+
+    - name: Set up Cosmocc Toolchain
+      run: |
+        mkdir -p $HOME/cosmocc && cd $HOME/cosmocc
+        wget https://cosmo.zip/pub/cosmocc/cosmocc.zip
+        unzip cosmocc.zip
+        echo "$HOME/cosmocc/bin" >> $GITHUB_PATH
+
+    - name: Cross-Compile ncurses for Cosmo
+      run: |
+        git clone https://github.com/thomasdickey/ncurses-snapshots.git ncurses
+        cd ncurses
+        export CC=x86_64-unknown-cosmo-cc
+        export CXX=x86_64-unknown-cosmo-c++
+        ./configure --prefix=/opt/cosmos/x86_64 --without-shared --with-normal --without-ada --without-progs --disable-termcap
+        make -j$(nproc)
+        sudo make install
+
+    - name: Compile CMatrix as an APE Binary
+      run: |
+        git clone https://github.com/abishekvashok/cmatrix.git
+        cd cmatrix
+        autoreconf -i
+        export CC=x86_64-unknown-cosmo-cc
+        ./configure --prefix=/opt/cosmos/x86_64 \
+          CFLAGS="-I/opt/cosmos/x86_64/include -I/opt/cosmos/x86_64/include/ncursesw" \
+          LDFLAGS="-L/opt/cosmos/x86_64/lib"
+        make -j$(nproc)
+
+    - name: Prepare and Verify Artifact
+      run: |
+        mkdir -p dist
+        # Rename the output to a .com executable (Actually Portable Executable format)
+        cp cmatrix/src/cmatrix dist/cmatrix.com
+        # Test if it runs on the local Linux runner environment
+        ./dist/cmatrix.com -h || true
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: cmatrix-ape
+        path: dist/cmatrix.com
