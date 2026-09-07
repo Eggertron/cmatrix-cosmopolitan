@@ -59,7 +59,8 @@ jobs:
         ./configure \
           --prefix=/opt/cosmos/x86_64 \
           CFLAGS="-I/opt/cosmos/x86_64/include -I/opt/cosmos/x86_64/include/ncursesw" \
-          LDFLAGS="-L/opt/cosmos/x86_64/lib"
+          LDFLAGS="-L/opt/cosmos/x86_64/lib" \
+          LIBS="-lncursesw"
         make -j$(nproc)
 
     - name: Prepare and Verify Artifact
