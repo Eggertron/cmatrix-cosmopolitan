@@ -43,6 +43,10 @@ jobs:
           --enable-overwrite \
           --enable-widec \
           CPPFLAGS="-D_GNU_SOURCE -D_XOPEN_SOURCE=700"
+
+        # Force-include wchar.h in curses.priv.h to resolve the wcwidth implicit declaration error
+        sed -i '/#include <ncurses_dll.h>/a #include <wchar.h>' ncurses/curses.priv.h
+
         make -j$(nproc)
         sudo make install
 
