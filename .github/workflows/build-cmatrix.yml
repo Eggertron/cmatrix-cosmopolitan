@@ -33,7 +33,7 @@ jobs:
         cd ncurses
         export CC=x86_64-unknown-cosmo-cc
         export CXX=x86_64-unknown-cosmo-c++
-        ./configure --prefix=/opt/cosmos/x86_64 --without-shared --with-normal --without-ada --without-progs --disable-termcap
+        ./configure --prefix=/opt/cosmos/x86_64 --without-shared --with-normal --without-ada --without-progs --disable-termcap --disable-widec
         make -j$(nproc)
         sudo make install
 
