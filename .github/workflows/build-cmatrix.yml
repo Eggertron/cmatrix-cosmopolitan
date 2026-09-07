@@ -33,10 +33,9 @@ jobs:
         cd ncurses
         export CC=x86_64-unknown-cosmo-cc
         export CXX=x86_64-unknown-cosmo-c++
-        #./configure --prefix=/opt/cosmos/x86_64 --without-shared --with-normal --without-ada --without-progs --disable-termcap --disable-widec --enable-overwrite
         ./configure \
           --prefix=/opt/cosmos/x86_64 \
-           --without-shared \
+          --without-shared \
           --with-normal \
           --without-ada \
           --without-progs \
@@ -54,9 +53,11 @@ jobs:
         cd cmatrix
         autoreconf -i
         export CC=x86_64-unknown-cosmo-cc
-        ./configure --prefix=/opt/cosmos/x86_64 \
+        ./configure \
+          --prefix=/opt/cosmos/x86_64 \
           CFLAGS="-I/opt/cosmos/x86_64/include -I/opt/cosmos/x86_64/include/ncursesw" \
           LDFLAGS="-L/opt/cosmos/x86_64/lib"
+  
         make -j$(nproc)
 
     - name: Prepare and Verify Artifact
