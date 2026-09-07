@@ -42,8 +42,7 @@ jobs:
           --disable-termcap \
           --enable-overwrite \
           --enable-widec \
-          CPPFLAGS="-D_GNU_SOURCE"
-  
+          CPPFLAGS="-D_GNU_SOURCE -D_XOPEN_SOURCE=700"
         make -j$(nproc)
         sudo make install
 
@@ -57,15 +56,12 @@ jobs:
           --prefix=/opt/cosmos/x86_64 \
           CFLAGS="-I/opt/cosmos/x86_64/include -I/opt/cosmos/x86_64/include/ncursesw" \
           LDFLAGS="-L/opt/cosmos/x86_64/lib"
-  
         make -j$(nproc)
 
     - name: Prepare and Verify Artifact
       run: |
         mkdir -p dist
-        # Rename the output to a .com executable (Actually Portable Executable format)
         cp cmatrix/src/cmatrix dist/cmatrix.com
-        # Test if it runs on the local Linux runner environment
         ./dist/cmatrix.com -h || true
 
     - name: Upload Artifacts
@@ -73,3 +69,4 @@ jobs:
       with:
         name: cmatrix-ape
         path: dist/cmatrix.com
+        
