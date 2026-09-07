@@ -1,3 +1,5 @@
+[![Build Cosmopolitan CMatrix](https://github.com/Eggertron/cmatrix-cosmopolitan/actions/workflows/build-cmatrix.yml/badge.svg)](https://github.com/Eggertron/cmatrix-cosmopolitan/actions/workflows/build-cmatrix.yml)
+
 # 🌌 Cosmopolitan CMatrix (`cmatrix.com`)
 
 <p align="center">
